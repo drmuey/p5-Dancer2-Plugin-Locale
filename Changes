@@ -1,5 +1,8 @@
 Revision history for Dancer2-Plugin-Locale
 
+???
+    - fix template keyword
+
 0.01  2015-01-24 09:49:59
        Initial release.
 

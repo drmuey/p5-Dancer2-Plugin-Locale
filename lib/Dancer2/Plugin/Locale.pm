@@ -85,7 +85,9 @@ on_plugin_import {
     $dsl->app->add_hook(
         Dancer2::Core::Hook->new(
             name => 'before_template_render',
-            code => sub { $_[0]->{locale} ||= locale( $dsl, @_ ) },                                                                   # TODO 2. YAGNI? _[mt] => sub { locale->makevar(@_) } to parser
+            code => sub {
+                $_[0]->{locale} ||= sub { locale( $dsl, @_ ) }
+            },                                                                                                                        # TODO 2. YAGNI? _[mt] => sub { locale->makevar(@_) } to parser
         )
     );
 };
