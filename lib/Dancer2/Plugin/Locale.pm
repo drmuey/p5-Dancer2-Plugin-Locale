@@ -138,17 +138,29 @@ A lazy façade to get a locale handle suitable to the request. The locale object
 
 It will be based on the session’s locale value if possible, then a configured default if possible, then 'en'.
 
-… TODO, sorry I needed to get this on CPAN for a consumer but will finish it ASAP …
+=head2 The object, in more detail
 
-=head2 The object, in detail
+The object is L<Locale::Maketext::Utils> based.
 
-… TODO, sorry I needed to get this on CPAN for a consumer but will finish it ASAP …
+L<Locale::Maketext::Utils> extends L<Locale::Maketext> a number of ways including:
 
-=head3 CLDR
+=over 4
 
-… TODO, sorry I needed to get this on CPAN for a consumer but will finish it ASAP …
+=item * It shifts toward CLDR based functionality which means you no longer have to create locale specific variants of code in each locale’s class.
 
-=head3 Available locales.
+=item * Because of that and other utils it has, creating and dealing with the locale subclasses classes is much easier.
+
+=item * The object is a multiton (AKA an argument based singleton):  L<Locale::Maketext::Utils/"Argument based singleton">
+
+=item * Adds a number of helpful methods: L<Locale::Maketext::Utils/METHODS>
+
+=item * More sane fallback and lookup failure hooks: L<Locale::Maketext::Utils/"Automatically _AUTO'd Failure Handling with hooks">
+
+=item * Adds a very handy set of bracket notation methods (CLDR when possible)  L</"Bracket Notation">
+
+=back
+
+=head3 Available Locales
 
 The locales available are determined by the lexicon files found in the appdir’s C<locale/> directory.
 
@@ -158,11 +170,14 @@ Tip: To make them available to your UI you could simply symlink C<…/locale/> t
 
 =head3 Lexicon
 
-A lexicon is a simple key/value hash where the key is the phrase and the value is the translation.
+A lexicon is a simple key/value hash  where the key is the phrase and the value is the translation.
 
-For example,
+For example,in pseudo code:
 
+    # source phrase => target phrase
     'Hello World' => 'Bonjour Monde'
+
+Each locale will have a lexicon hash in a file as desrcibed in L</"Available Locales">.
 
 The hash must be written in JSON format and be utf8 encoded.
 
@@ -172,7 +187,27 @@ Don’t be afraid of non-ASCII characters, just put them in the file as the char
 
 =head3 Bracket Notation
 
-… TODO, sorry I needed to get this on CPAN for a consumer but will finish it ASAP …
+Bracket notation is described a bit more at L<Locale::Maketext/BRACKET NOTATION> but is essentially a format to allow you to notate–within left and right square brackets, hence the name–dynamic portions of a phrase.
+
+For example, include a non-translatable ever-changing name:
+
+    locale->maketext('Your email address, [_1], has been unsubscribed.', $email)
+
+or a number formatted according to the object’s locale’s CLDR data:
+
+    locale->maketext('You are user [numf,_1] of [numf,_2].', $place, $count)
+
+The bracket notation improvements over the core L<Locale::Maketext> can be categoraized as follows:
+
+=over 4
+
+=item * L<improved core Locale::Maketext bracket notation methods|http://search.cpan.org/perldoc?Locale::Maketext::Utils#Improved_Bracket_Notation>
+
+=item * L<additional bracket notation methods|http://search.cpan.org/perldoc?Locale::Maketext::Utils#Additional_bracket_notation_methods>
+
+=item * L<output() bracket notation methods|http://search.cpan.org/perldoc?Locale::Maketext::Utils#output()>
+
+=back
 
 =head2 Misc Info
 
