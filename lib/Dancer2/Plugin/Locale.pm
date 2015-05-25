@@ -59,10 +59,10 @@ on_plugin_import {
             die "Could not read locale directory ($locale_dir): $!\n";
         }
     }
-    no strict 'refs';
-    no warnings 'redefine';
+    no strict 'refs';                                                                                                                           ## no critic
+    no warnings 'redefine';                                                                                                                     ## no critic
     *Locale::Maketext::Utils::list_available_locales = sub {
-        return sort @available_locales;
+        return ( sort @available_locales );
     };
 
     # create classes that Locale::Maketext uses
@@ -74,11 +74,11 @@ on_plugin_import {
         # TODO 1: support tieing to CDB_File hash (e.g. if -f locale_cdb/$tag.cdb) so as not to load all the data into memory (see use_external_lex_cache)?
 
         # TODO 2: POD app w/ charset !utf8 == ick
-        eval "package Dancer2::Plugin::Locale::Obj::$tag;use base 'Dancer2::Plugin::Locale::Obj';our \$Encoding='utf8';our \%Lexicon;package Dancer2::Plugin::Locale;";
+        eval "package Dancer2::Plugin::Locale::Obj::$tag;use base 'Dancer2::Plugin::Locale::Obj';our \$Encoding='utf8';our \%Lexicon;package Dancer2::Plugin::Locale;";    ## no critic
 
         $JSON::Syck::ImplicitUnicode = 1;
-        no strict 'refs';
-        %{"Dancer2::Plugin::Locale::Obj::$tag\::Lexicon"} = $tag eq 'en' && !-e $file ? () : ( %{ JSON::Syck::LoadFile($file) } );    # TODO 1: instead: tie %{"Dancer2::Plugin::Locale::$tag\::Lexicon"}, 'Tie::Hash::ReadonlyStack', JSON::Syck::LoadFile($file);
+        no strict 'refs';                                                                                                                                                  ## no critic
+        %{"Dancer2::Plugin::Locale::Obj::$tag\::Lexicon"} = $tag eq 'en' && !-e $file ? () : ( %{ JSON::Syck::LoadFile($file) } );                                         # TODO 1: instead: tie %{"Dancer2::Plugin::Locale::$tag\::Lexicon"}, 'Tie::Hash::ReadonlyStack', JSON::Syck::LoadFile($file);
     }
 
     # TODO 2: Is there a better way to add template keyword?
@@ -87,7 +87,7 @@ on_plugin_import {
             name => 'before_template_render',
             code => sub {
                 $_[0]->{locale} ||= sub { locale( $dsl, @_ ) }
-            },                                                                                                                        # TODO 2. YAGNI? _[mt] => sub { locale->makevar(@_) } to parser
+            },                                                                                                                                                             # TODO 2. YAGNI? _[mt] => sub { locale->makevar(@_) } to parser
         )
     );
 };
