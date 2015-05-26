@@ -6,7 +6,7 @@ use warnings;
 use Dancer2::Plugin;
 use JSON::Syck;    # TODO 2: use Dancer2::Serializer::JSON; instead ?
 
-$Dancer2::Plugin::Locale::VERSION = '0.01';
+$Dancer2::Plugin::Locale::VERSION = '0.02';
 
 package Dancer2::Plugin::Locale::Obj;
 use Locales 0.33 unicode => 1;
@@ -109,7 +109,7 @@ Dancer2::Plugin::Locale - Localize your Dancer2 application
 
 =head1 VERSION
 
-This document describes Dancer2::Plugin::Locale version 0.01
+This document describes Dancer2::Plugin::Locale version 0.02
 
 =head1 SYNOPSIS
 

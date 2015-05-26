@@ -1,6 +1,6 @@
 Revision history for Dancer2-Plugin-Locale
 
-???
+0.02
     - fix template keyword
     - Do the TODO POD items about the object itself
     - perl critic notations
