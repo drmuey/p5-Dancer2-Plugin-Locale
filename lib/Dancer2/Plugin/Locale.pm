@@ -4,8 +4,6 @@ use strict;
 use warnings;
 
 use Dancer2::Plugin;
-use JSON::Syck;    # TODO 2: use Dancer2::Serializer::JSON; instead ?
-
 $Dancer2::Plugin::Locale::VERSION = '0.02';
 
 package Dancer2::Plugin::Locale::Obj;
@@ -76,9 +74,8 @@ on_plugin_import {
         # TODO 2: POD app w/ charset !utf8 == ick
         eval "package Dancer2::Plugin::Locale::Obj::$tag;use base 'Dancer2::Plugin::Locale::Obj';our \$Encoding='utf8';our \%Lexicon;package Dancer2::Plugin::Locale;";    ## no critic
 
-        $JSON::Syck::ImplicitUnicode = 1;
         no strict 'refs';                                                                                                                                                  ## no critic
-        %{"Dancer2::Plugin::Locale::Obj::$tag\::Lexicon"} = $tag eq 'en' && !-e $file ? () : ( %{ JSON::Syck::LoadFile($file) } );                                         # TODO 1: instead: tie %{"Dancer2::Plugin::Locale::$tag\::Lexicon"}, 'Tie::Hash::ReadonlyStack', JSON::Syck::LoadFile($file);
+        %{"Dancer2::Plugin::Locale::Obj::$tag\::Lexicon"} = $tag eq 'en' && !-e $file ? () : ( %{ _from_json_file($file) } );                                              # TODO 1: instead: tie %{"Dancer2::Plugin::Locale::$tag\::Lexicon"}, 'Tie::Hash::ReadonlyStack', _from_json_file($file);
     }
 
     # TODO 2: Is there a better way to add template keyword?
@@ -91,6 +88,14 @@ on_plugin_import {
         )
     );
 };
+
+sub _from_json_file {
+    my ($file) = @_;
+    open( my $fh, '<', $file ) or die "Could not read “$file”: $!";
+    return from_json(
+        do { local $/; <$fh> }
+    );
+}
 
 # TODO 2: localization tips
 # TODO 2: extractor/checker tool
@@ -258,8 +263,6 @@ L<Locale::Maketext::Utils>
 L<Locales>
 
 L<File::Spec>
-
-L<JSON::Syck>
 
 =head1 INCOMPATIBILITIES
 
