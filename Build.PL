@@ -18,7 +18,7 @@ my $builder = Module::Build->new(
         'JSON::Syck'              => 0,
         'File::Slurp'             => 0,
         'File::Path::Tiny'        => 0,
-        'Template::Toolkit'       => 0,
+        'Template'                => 0,
     },
 
     # delete_share => '.', # NYI https://rt.cpan.org/Ticket/Display.html?id=92863
