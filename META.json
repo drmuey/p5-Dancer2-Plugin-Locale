@@ -41,7 +41,7 @@
             "Locale::Maketext::Utils" : "0",
             "Locales" : "0.33",
             "Plack::Test" : "0",
-            "Template::Toolkit" : "0",
+            "Template" : "0",
             "Test::More" : "0"
          }
       }

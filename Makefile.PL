@@ -27,7 +27,7 @@ WriteMakefile(
         'JSON::Syck'              => 0,
         'File::Slurp'             => 0,
         'File::Path::Tiny'        => 0,
-        'Template::Toolkit'       => 0,
+        'Template'                => 0,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES    => 'Dancer2-Plugin-Locale-*' },
