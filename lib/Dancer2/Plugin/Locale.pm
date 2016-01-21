@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Dancer2::Plugin;
-$Dancer2::Plugin::Locale::VERSION = '0.03';
+$Dancer2::Plugin::Locale::VERSION = '0.04';
 
 package Dancer2::Plugin::Locale::Obj;
 use Locales 0.33 unicode => 1;
@@ -38,7 +38,7 @@ on_plugin_import {
     my @available_locales = ('en');
 
     # read locale/ dir for available locales (via config also? likley YAGNI/overly comlicated-why?)
-    my $locale_dir = File::Spec->catdir( $dsl->app->config->{'appdir'}, 'locale' );                                                             # configurable? nah, why?
+    my $locale_dir = File::Spec->catdir( $dsl->app->config->{'appdir'}, 'locale' );                                                                      # configurable? nah, why?
     if ( -d $locale_dir ) {
         if ( opendir my $dh, $locale_dir ) {
             while ( my $file = readdir($dh) ) {
@@ -46,7 +46,7 @@ on_plugin_import {
                 next if $file eq 'en.json';
                 $file =~ s/\.json//;
                 if ( Locales::normalize_tag($file) ne $file ) {
-                    warn "Skipping un-normalized locale named lexicon ($file.json) …\n";                                                      # just no apparent need to complicate things by trying to deal with this
+                    warn "Skipping un-normalized locale named lexicon ($file.json) …\n";                                                               # just no apparent need to complicate things by trying to deal with this
                     next;
                 }
                 push @available_locales, $file;
@@ -57,8 +57,8 @@ on_plugin_import {
             die "Could not read locale directory ($locale_dir): $!\n";
         }
     }
-    no strict 'refs';                                                                                                                           ## no critic
-    no warnings 'redefine';                                                                                                                     ## no critic
+    no strict 'refs';                                                                                                                                    ## no critic
+    no warnings 'redefine';                                                                                                                              ## no critic
     *Locale::Maketext::Utils::list_available_locales = sub {
         return ( sort @available_locales );
     };
@@ -114,7 +114,7 @@ Dancer2::Plugin::Locale - Localize your Dancer2 application
 
 =head1 VERSION
 
-This document describes Dancer2::Plugin::Locale version 0.03
+This document describes Dancer2::Plugin::Locale version 0.04
 
 =head1 SYNOPSIS
 

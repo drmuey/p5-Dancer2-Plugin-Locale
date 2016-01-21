@@ -1,8 +1,9 @@
 Revision history for Dancer2-Plugin-Locale
 
-0.04  ???
+0.04  2016-01-20 21:18:42
     - Hack around https://github.com/PerlDancer/Dancer2/issues/1107
     - Change rt to github
+    - WS fixups
 
 0.03  2015-08-19 18:49:10
     - Use Dancer’s json function
