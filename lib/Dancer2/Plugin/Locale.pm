@@ -268,13 +268,10 @@ L<File::Spec>
 
 None reported.
 
-=head1 BUGS AND LIMITATIONS
+=head1 BUGS AND FEATURES
 
-No bugs have been reported.
-
-Please report any bugs or feature requests to
-C<bug-dancer2-plugin-locale@rt.cpan.org>, or through the web interface at
-L<http://rt.cpan.org>.
+Please report any bugs or feature requests (and a pull request for bonus points)
+ through the issue tracker at L<https://github.com/drmuey/p5-Dancer2-Plugin-Locale/issues>.
 
 =head1 AUTHOR
 
