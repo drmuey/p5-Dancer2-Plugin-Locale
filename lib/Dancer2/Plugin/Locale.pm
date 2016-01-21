@@ -29,7 +29,7 @@ register locale => sub {
     my $app  = $dsl->app;
 
     # TODO 2: request locale via browser/HTP req after session and before default?
-    return Dancer2::Plugin::Locale::Obj->get_handle( grep( { defined } ( $app->session->read('locale'), $conf->{default_locale} ) ), 'en' );    # multiton already via Locale::Maketext::Utils
+    return Dancer2::Plugin::Locale::Obj->get_handle( grep( { defined } ( eval { $app->session->read('locale') }, $conf->{default_locale} ) ), 'en' );    # multiton already via Locale::Maketext::Utils
 };
 
 on_plugin_import {

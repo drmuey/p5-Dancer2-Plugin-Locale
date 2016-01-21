@@ -1,5 +1,8 @@
 Revision history for Dancer2-Plugin-Locale
 
+0.04  ???
+    - Hack around https://github.com/PerlDancer/Dancer2/issues/1107
+
 0.03  2015-08-19 18:49:10
     - Use Dancer’s json function
     - call locale as dsl method, drop no-op ||=, remove YAGNI comment
