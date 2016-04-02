@@ -18,21 +18,23 @@ use File::Spec;
 
 # use Tie::Hash::ReadonlyStack;
 
-register locale => sub {
+plugin_keywords 'locale';
+
+sub locale {
     my $dsl = shift;
 
     if (@_) {
         return Dancer2::Plugin::Locale::Obj->get_handle( grep( { defined } (@_) ), 'en' );    # multiton already via Locale::Maketext::Utils
     }
 
-    my $conf = plugin_setting();
+    my $conf = $dsl->config;
     my $app  = $dsl->app;
 
     # TODO 2: request locale via browser/HTP req after session and before default?
-    return Dancer2::Plugin::Locale::Obj->get_handle( grep( { defined } ( eval { $app->session->read('locale') }, $conf->{default_locale} ) ), 'en' );    # multiton already via Locale::Maketext::Utils
+    return Dancer2::Plugin::Locale::Obj->get_handle( grep( { defined } ( eval { $app->session->read('locale') }, $dsl->config->{default_locale} ) ), 'en' );    # multiton already via Locale::Maketext::Utils
 };
 
-on_plugin_import {
+sub BUILD {
     my $dsl = shift;
 
     my @available_locales = ('en');
@@ -99,8 +101,6 @@ sub _from_json_file {
 
 # TODO 2: localization tips
 # TODO 2: extractor/checker tool
-
-register_plugin;
 
 1;
 
