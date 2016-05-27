@@ -27,7 +27,6 @@ sub locale {
         return Dancer2::Plugin::Locale::Obj->get_handle( grep( { defined } (@_) ), 'en' );    # multiton already via Locale::Maketext::Utils
     }
 
-    my $conf = $dsl->config;
     my $app  = $dsl->app;
 
     # TODO 2: request locale via browser/HTP req after session and before default?
