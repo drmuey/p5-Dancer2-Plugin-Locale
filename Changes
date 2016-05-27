@@ -1,5 +1,8 @@
 Revision history for Dancer2-Plugin-Locale
 
+0.05  2016-05-27 07:16:00
+    - Convert to plugin2 (thanks SysPete!)
+
 0.04  2016-01-20 21:18:42
     - Hack around https://github.com/PerlDancer/Dancer2/issues/1107
     - Change rt to github
