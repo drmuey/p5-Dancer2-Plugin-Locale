@@ -27,11 +27,11 @@ sub locale {
         return Dancer2::Plugin::Locale::Obj->get_handle( grep( { defined } (@_) ), 'en' );    # multiton already via Locale::Maketext::Utils
     }
 
-    my $app  = $dsl->app;
+    my $app = $dsl->app;
 
     # TODO 2: request locale via browser/HTP req after session and before default?
     return Dancer2::Plugin::Locale::Obj->get_handle( grep( { defined } ( eval { $app->session->read('locale') }, $dsl->config->{default_locale} ) ), 'en' );    # multiton already via Locale::Maketext::Utils
-};
+}
 
 sub BUILD {
     my $dsl = shift;
@@ -39,7 +39,7 @@ sub BUILD {
     my @available_locales = ('en');
 
     # read locale/ dir for available locales (via config also? likley YAGNI/overly comlicated-why?)
-    my $locale_dir = File::Spec->catdir( $dsl->app->config->{'appdir'}, 'locale' );                                                                      # configurable? nah, why?
+    my $locale_dir = File::Spec->catdir( $dsl->app->config->{'appdir'}, 'locale' );                                                                             # configurable? nah, why?
     if ( -d $locale_dir ) {
         if ( opendir my $dh, $locale_dir ) {
             while ( my $file = readdir($dh) ) {
@@ -47,7 +47,7 @@ sub BUILD {
                 next if $file eq 'en.json';
                 $file =~ s/\.json//;
                 if ( Locales::normalize_tag($file) ne $file ) {
-                    warn "Skipping un-normalized locale named lexicon ($file.json) …\n";                                                               # just no apparent need to complicate things by trying to deal with this
+                    warn "Skipping un-normalized locale named lexicon ($file.json) …\n";                                                                      # just no apparent need to complicate things by trying to deal with this
                     next;
                 }
                 push @available_locales, $file;
@@ -58,8 +58,8 @@ sub BUILD {
             die "Could not read locale directory ($locale_dir): $!\n";
         }
     }
-    no strict 'refs';                                                                                                                                    ## no critic
-    no warnings 'redefine';                                                                                                                              ## no critic
+    no strict 'refs';                                                                                                                                           ## no critic
+    no warnings 'redefine';                                                                                                                                     ## no critic
     *Locale::Maketext::Utils::list_available_locales = sub {
         return ( sort @available_locales );
     };
@@ -88,7 +88,7 @@ sub BUILD {
             },
         )
     );
-};
+}
 
 sub _from_json_file {
     my ($file) = @_;
