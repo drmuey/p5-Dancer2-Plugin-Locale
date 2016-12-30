@@ -1,6 +1,6 @@
 Revision history for Dancer2-Plugin-Locale
 
-0.06
+0.06  2016-12-30 22:03:39
     - Issue #4 from_json() is not defined anymore
     - Tests for lexicon file logic
 
