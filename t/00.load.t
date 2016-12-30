@@ -1,4 +1,4 @@
-use Test::More tests => 9;    ## TODO: SOOOOOO many more tests
+use Test::More tests => 15;    ## TODO: SOOOOO many more tests
 
 use Plack::Test;
 use HTTP::Request::Common;
@@ -18,6 +18,15 @@ package YourDancerApp {
     File::Slurp::write_file( config->{appdir} . '/views/tt/tag.tt',   "[% locale.get_language_tag() %]" );
     File::Slurp::write_file( config->{appdir} . '/views/tt/noarg.tt', "[% locale() %]" );
     File::Slurp::write_file( config->{appdir} . '/views/tt/argfr.tt', "[% locale('fr') %]" );
+
+    File::Path::Tiny::rm( config->{appdir} . '/locale' );
+    File::Path::Tiny::mk( config->{appdir} . '/locale' );
+    File::Path::Tiny::mk( config->{appdir} . '/locale/ru.json' );
+    File::Slurp::write_file( config->{appdir} . '/locale/fr.json',    { binmode => ':utf8' }, '{"Hello World™":"Bonjour Monde™"}' );
+    File::Slurp::write_file( config->{appdir} . '/locale/es.what',    { binmode => ':utf8' }, '{"Hello World™":"Hola Mundo™"}' );
+    File::Slurp::write_file( config->{appdir} . '/locale/ar.json',    { binmode => ':utf8' }, '' );
+    File::Slurp::write_file( config->{appdir} . '/locale/zh.json',    { binmode => ':utf8' }, '{"Hello World™":' );
+    File::Slurp::write_file( config->{appdir} . '/locale/pt-BR.what', { binmode => ':utf8' }, '{"Hello World™":"Olá Mundo™"}' );
 
     get '/' => sub {
         return locale->maketext('Hello World');
@@ -54,6 +63,30 @@ package YourDancerApp {
     get '/tt/multiton' => sub {
         return template('tt/argfr') ne template('tt/noarg') ? "yes" : "no";
     };
+
+    get '/lex/good' => sub {
+        return locale("fr")->maketext('Hello World™');
+    };
+
+    get '/lex/not_json_ext' => sub {
+        return locale("es")->maketext('Hello World™');
+    };
+
+    get '/lex/empty' => sub {
+        return locale("ar")->maketext('Hello World™');
+    };
+
+    get '/lex/badjson' => sub {
+        return locale("zh")->maketext('Hello World™');
+    };
+
+    get '/lex/nonnormalizedtag' => sub {
+        return locale("pt_br")->maketext('Hello World™');
+    };
+
+    get '/lex/dir' => sub {
+        return locale("ru")->maketext('Hello World™');
+    };
 };
 
 my $app  = YourDancerApp->to_app;
@@ -85,3 +118,21 @@ like( $res->content, qr/yes/, 'locale() object is reused in template' );
 
 $res = $test->request( GET '/tt/multiton' );
 like( $res->content, qr/yes/, 'locale() object is multiton in template' );
+
+$res = $test->request( GET '/lex/good' );
+is( $res->content, "Bonjour Monde™", 'lex: valid .json is used' );
+
+$res = $test->request( GET '/lex/not_json_ext' );
+is( $res->content, "Hello World™", 'lex: non-.json ignored' );
+
+$res = $test->request( GET '/lex/empty' );
+is( $res->content, "Hello World™", 'lex: empty is no-op' );
+
+$res = $test->request( GET '/lex/badjson' );
+is( $res->content, "Hello World™", 'lex: badjson is no-op' );
+
+$res = $test->request( GET '/lex/nonnormalizedtag' );
+is( $res->content, "Hello World™", 'lex: non-normalized tag is no-op' );
+
+$res = $test->request( GET '/lex/dir' );
+is( $res->content, "Hello World™", 'lex: dir is no-op' );

@@ -50,6 +50,12 @@ sub BUILD {
                     warn "Skipping un-normalized locale named lexicon ($file.json) …\n";                                                                      # just no apparent need to complicate things by trying to deal with this
                     next;
                 }
+
+                if ( !-f "$locale_dir/$file.json" ) {
+                    warn "Skipping non-file lexicon ($file.json) …\n";
+                    next;
+                }
+
                 push @available_locales, $file;
             }
             closedir($dh);
@@ -58,8 +64,8 @@ sub BUILD {
             die "Could not read locale directory ($locale_dir): $!\n";
         }
     }
-    no strict 'refs';                                                                                                                                           ## no critic
-    no warnings 'redefine';                                                                                                                                     ## no critic
+    no strict 'refs';          ## no critic
+    no warnings 'redefine';    ## no critic
     *Locale::Maketext::Utils::list_available_locales = sub {
         return ( sort @available_locales );
     };
@@ -94,9 +100,16 @@ sub _from_json_file {
     my ($file) = @_;
     open( my $fh, '<', $file ) or die "Could not read “$file”: $!";
     use Dancer2::Serializer::JSON;
-    return Dancer2::Serializer::JSON::from_json(
-        do { local $/; <$fh> }
-    );
+    my $ref = {};
+    eval {
+        $ref = Dancer2::Serializer::JSON::from_json(
+            do { local $/; <$fh> }
+        );
+    };
+    if ($@) {
+        warn "Ignoring lexicon, $file, since it containes invalid JSON: $@";
+    }
+    return $ref;
 }
 
 # TODO 2: localization tips

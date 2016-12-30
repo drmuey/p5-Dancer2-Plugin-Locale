@@ -2,6 +2,7 @@ Revision history for Dancer2-Plugin-Locale
 
 0.06
     - Issue #4 from_json() is not defined anymore
+    - Tests for lexicon file logic
 
 0.05  2016-05-27 07:16:00
     - Convert to plugin2 (thanks SysPete!)
