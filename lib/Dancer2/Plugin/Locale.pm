@@ -93,7 +93,8 @@ sub BUILD {
 sub _from_json_file {
     my ($file) = @_;
     open( my $fh, '<', $file ) or die "Could not read “$file”: $!";
-    return from_json(
+    use Dancer2::Serializer::JSON;
+    return Dancer2::Serializer::JSON::from_json(
         do { local $/; <$fh> }
     );
 }
