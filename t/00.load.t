@@ -1,4 +1,5 @@
-use Test::More tests => 15;    ## TODO: SOOOOO many more tests
+use Test::More tests => 19;    ## TODO: SOOOOO many more tests
+our @warns;
 
 use Plack::Test;
 use HTTP::Request::Common;
@@ -8,6 +9,10 @@ diag("Testing Dancer2::Plugin::Locale $Dancer2::Plugin::Locale::VERSION");
 
 package YourDancerApp {
     use Dancer2;
+
+    BEGIN {
+        $SIG{__WARN__} = sub { push @warns, @_ }
+    }
     use Dancer2::Plugin::Locale;
 
     sub _write_file {
@@ -37,6 +42,7 @@ package YourDancerApp {
     _write_file( config->{appdir} . '/locale/ar.json',    '' );
     _write_file( config->{appdir} . '/locale/zh.json',    '{"Hello World™":' );
     _write_file( config->{appdir} . '/locale/pt-BR.what', '{"Hello World™":"Olá Mundo™"}' );
+    _write_file( config->{appdir} . '/locale/en-GB.json', '{"Hello World™":"’elo Guvna"}' );
 
     get '/' => sub {
         return locale->maketext('Hello World');
@@ -101,6 +107,11 @@ package YourDancerApp {
 
 my $app  = YourDancerApp->to_app;
 my $test = Plack::Test->create($app);
+
+ok( grep( m/Skipping non-file lexicon \(ru\.json\)/,                        @warns ), "non-file lexicon gets a warning" );
+ok( grep( m/Ignoring lexicon, .*zh\.json, since it containes invalid JSON/, @warns ), "bad JSON lexicon gets a warning" );
+ok( grep( m/Skipping un-normalized locale named lexicon \(en-GB\.json\)/,   @warns ), "un-normalized locale lexicon gets a warning" );
+ok( @warns == 3, "no unexpected warnings" ) or diag( explain( \@warns ) );
 
 my $res = $test->request( GET '/' );
 like( $res->content, qr/Hello World/, 'locale() works in code' );
