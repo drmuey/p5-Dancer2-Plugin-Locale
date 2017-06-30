@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Dancer2::Plugin;
-$Dancer2::Plugin::Locale::VERSION = '0.06';
+$Dancer2::Plugin::Locale::VERSION = '0.07';
 
 package Dancer2::Plugin::Locale::Obj;
 use Locales 0.33 unicode => 1;
@@ -132,7 +132,7 @@ Dancer2::Plugin::Locale - Localize your Dancer2 application
 
 =head1 VERSION
 
-This document describes Dancer2::Plugin::Locale version 0.06
+This document describes Dancer2::Plugin::Locale version 0.07
 
 =head1 SYNOPSIS
 
