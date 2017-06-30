@@ -7,7 +7,8 @@ use File::Path::Tiny ();
 
 diag("Testing Dancer2::Plugin::Locale $Dancer2::Plugin::Locale::VERSION");
 
-package YourDancerApp {
+package YourDancerApp;
+{
     use Dancer2;
 
     BEGIN {
@@ -103,7 +104,9 @@ package YourDancerApp {
     get '/lex/dir' => sub {
         return locale("ru")->maketext('Hello World™');
     };
-};
+}
+
+package main;
 
 my $app  = YourDancerApp->to_app;
 my $test = Plack::Test->create($app);
