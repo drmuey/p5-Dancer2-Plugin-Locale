@@ -8,6 +8,7 @@ Revision history for Dancer2-Plugin-Locale
             - lex: valid .json is used
         - Avoid using package YourDancerApp {} syntax to address t/00.load.t:
             - Invalid version format (non-numeric data) at t/00.load.t line 10, near "package YourDancerApp "
+    - Issue #5: Factor in HTTP_ACCEPT_LANGUAGE with the locale decision chain
 
 0.06  2016-12-30 22:03:39
     - Issue #4 from_json() is not defined anymore

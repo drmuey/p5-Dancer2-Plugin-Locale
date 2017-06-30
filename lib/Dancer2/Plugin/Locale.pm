@@ -29,8 +29,8 @@ sub locale {
 
     my $app = $dsl->app;
 
-    # TODO 2: request locale via browser/HTP req after session and before default?
-    return Dancer2::Plugin::Locale::Obj->get_handle( grep( { defined } ( eval { $app->session->read('locale') }, $dsl->config->{default_locale} ) ), 'en' );    # multiton already via Locale::Maketext::Utils
+    my @HTTP_ACCEPT_LANGUAGEs = $dsl->config->{parse_accept_language} ? _parse_accept_languages( $app->request->env->{HTTP_ACCEPT_LANGUAGE}, $dsl->config->{default_locale} ) : ();
+    return Dancer2::Plugin::Locale::Obj->get_handle( grep( { defined } ( eval { $app->session->read('locale') }, @HTTP_ACCEPT_LANGUAGEs, $dsl->config->{default_locale} ) ), 'en' );    # multiton already via Locale::Maketext::Utils
 }
 
 sub BUILD {
@@ -39,7 +39,7 @@ sub BUILD {
     my @available_locales = ('en');
 
     # read locale/ dir for available locales (via config also? likley YAGNI/overly comlicated-why?)
-    my $locale_dir = File::Spec->catdir( $dsl->app->config->{'appdir'}, 'locale' );                                                                             # configurable? nah, why?
+    my $locale_dir = File::Spec->catdir( $dsl->app->config->{'appdir'}, 'locale' );                                                                                                     # configurable? nah, why?
     if ( -d $locale_dir ) {
         if ( opendir my $dh, $locale_dir ) {
             while ( my $file = readdir($dh) ) {
@@ -47,7 +47,7 @@ sub BUILD {
                 next if $file eq 'en.json';
                 $file =~ s/\.json//;
                 if ( Locales::normalize_tag($file) ne $file ) {
-                    warn "Skipping un-normalized locale named lexicon ($file.json) …\n";                                                                      # just no apparent need to complicate things by trying to deal with this
+                    warn "Skipping un-normalized locale named lexicon ($file.json) …\n";                                                                                              # just no apparent need to complicate things by trying to deal with this
                     next;
                 }
 
@@ -115,6 +115,30 @@ sub _from_json_file {
         warn "Ignoring lexicon, $file, since it containes invalid JSON:\n\t$@";
     }
     return $ref;
+}
+
+sub _parse_accept_languages {
+    my ( $HTTP_ACCEPT_LANGUAGE, $default_locale ) = @_;
+
+    my ( %result, %seen );
+    for my $item ( split( /,/, $HTTP_ACCEPT_LANGUAGE ) ) {
+        my ( $tag, $weight ) = split( /;/, $item );
+        $tag =~ s/\A\s+//;
+        $tag =~ s/\s+\z//;
+        $weight =~ s/\A\s+//;
+        $weight =~ s/\s+\z//;
+        $tag = Locales::normalize_tag($tag);
+
+        next if $tag eq '*';
+        next if $tag eq 'en';
+        next if $tag eq $default_locale;
+        next if exists $seen{$tag};
+
+        push @{ $result{$weight} }, $tag;
+        $seen{$tag}++;
+    }
+
+    return map { @{ $result{$_} } } sort keys %result;
 }
 
 # TODO 2: localization tips
