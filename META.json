@@ -34,7 +34,6 @@
          "requires" : {
             "Dancer2::Plugin" : "0",
             "File::Path::Tiny" : "0",
-            "File::Slurp" : "0",
             "File::Spec" : "0",
             "HTTP::Request::Common" : "0",
             "Locale::Maketext::Utils" : "0",
